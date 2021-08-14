@@ -26,14 +26,15 @@ struct Node {
     char* rval;
 };
 
-int op_prec(int t1, int t2) {
+//reverse of real order for depth generation
+int tree_prec(int t1, int t2) {
     int n1, n2;
     switch(t1) {
         case T_LPAREN:
-            n1=0;
+            n1=2;
             break;
         case T_RPAREN:
-            n1=0;
+            n1=2;
             break;
         case T_DIV:
             n1=1;
@@ -42,10 +43,10 @@ int op_prec(int t1, int t2) {
             n1=1;
             break;
         case T_ADD:
-            n1=2;
+            n1=0;
             break;
         case T_SUB:
-            n1=2;
+            n1=0;
             break;
         case T_INT:
             n1=-1;
@@ -55,10 +56,10 @@ int op_prec(int t1, int t2) {
     }
     switch(t2) {
         case T_LPAREN:
-            n2=0;
+            n2=2;
             break;
         case T_RPAREN:
-            n2=0;
+            n2=2;
             break;
         case T_DIV:
             n2=1;
@@ -67,10 +68,10 @@ int op_prec(int t1, int t2) {
             n2=1;
             break;
         case T_ADD:
-            n2=2;
+            n2=0;
             break;
         case T_SUB:
-            n2=2;
+            n2=0;
             break;
         case T_INT:
             n2=-1;
@@ -92,21 +93,28 @@ int op_prec(int t1, int t2) {
 }
 
 struct Node* build_tree(struct Node** list, int size) {
-    printf("new recur\n");
     struct Node* root = list[0];
 
     if(size == 1) return root;
 
     int min = 0;
+
+    for(int i=0; i<size; i++) {
+        if(list[i]->token != T_INT) {
+            min = i;
+            break; 
+        }
+    }
+
     for(int i=1; i<size; i++) {
-        if(list[i]->token == T_INT && root->token == T_INT) continue;
-        if(op_prec(list[i]->token, root->token)) min=i;
+        if(list[i]->token == T_INT) continue;
+        if(tree_prec(list[i]->token, root->token)) min=i;
+       root = list[min];
     }
     root = list[min];
     struct Node** left = malloc(sizeof(struct Node*) * min);
     for(int i=0; i<min; i++) { left[i] = list[i]; }
     struct Node** right = malloc(sizeof(struct Node*) * ((size-1)-min));
-    printf("%d\n", (size-1)-min);
     int j=0;
     for(int i=min+1; i<size; i++) { right[j] = list[i]; j++; }
     root->left = build_tree(left, min);
@@ -160,7 +168,6 @@ int tokenize(char* input) {
                 ind++;
             }
             i = j-1;
-            printf("%s ", nstr);
             struct Node* node = malloc(sizeof(struct Node));
             node->right = NULL;
             node->left = NULL;
@@ -216,17 +223,13 @@ int tokenize(char* input) {
     printf("\nTokens: %d\n", tc);
 
     struct Node* root = build_tree(nodes, tc);
-    printf("%s ", root->left->left->rval);
-    printf("%c ", root->left->token);
-    printf("%s ", root->left->right->rval);
     printf("%c ", root->token);
-    printf("%s \n", root->right->rval);
     return 0;
 }
 
 int main(int argc, char** argv) {
 
-    char* example = "1 + 2 * 3";
+    char* example = "1 + 3 * 2";
     printf("Example: %s\n", example);
     tokenize(example);
 
