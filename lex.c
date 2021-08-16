@@ -30,12 +30,12 @@ struct Node {
 int tree_prec(int t1, int t2) {
     int n1, n2;
     switch(t1) {
-        case T_LPAREN:
+/*        case T_LPAREN:
             n1=2;
             break;
         case T_RPAREN:
             n1=2;
-            break;
+            break; */
         case T_DIV:
             n1=1;
             break;
@@ -55,12 +55,12 @@ int tree_prec(int t1, int t2) {
             return -1;
     }
     switch(t2) {
-        case T_LPAREN:
+/*        case T_LPAREN:
             n2=2;
             break;
         case T_RPAREN:
             n2=2;
-            break;
+            break;  */
         case T_DIV:
             n2=1;
             break;
@@ -120,6 +120,33 @@ struct Node* build_tree(struct Node** list, int size) {
     root->left = build_tree(left, min);
     root->right = build_tree(right, (size-1)-min);
     return root;
+}
+
+int parse_tree(struct Node* root) {
+    int res = 0;
+    if(root->left == NULL && root->right == NULL) return root->rval;
+
+    
+    switch(root->token) {
+        case T_DIV:
+//           return root->left->rval/root->right->rval;
+            break;
+        case T_MUL:
+            n2=1;
+            break;
+        case T_ADD:
+            n2=0;
+            break;
+        case T_SUB:
+            n2=0;
+            break;
+        case T_INT:
+            n2=-1;
+            break;
+        default:
+            return -1;
+    }
+
 }
 
 int insert_node(struct Node* next) {
@@ -196,14 +223,14 @@ int tokenize(char* input) {
                     printf("OP_MUL ");
                     tok = T_MUL;
                     break;
-                case T_LPAREN:
+          /*    case T_LPAREN:
                     printf("LPAREN ");
                     tok = T_LPAREN;
                     break;
                 case T_RPAREN:
                     printf("RPAREN ");
                     tok = T_RPAREN;
-                    break;
+                    break;  */
                 case T_SEMIC:
                     printf("SEMIC\n");
                     tok = T_SEMIC;
@@ -223,7 +250,7 @@ int tokenize(char* input) {
     printf("\nTokens: %d\n", tc);
 
     struct Node* root = build_tree(nodes, tc);
-    printf("%c ", root->token);
+    int result = parse_tree(root);
     return 0;
 }
 
