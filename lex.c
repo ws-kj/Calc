@@ -132,16 +132,12 @@ int parse_tree(struct Node* root) {
 //           return root->left->rval/root->right->rval;
             break;
         case T_MUL:
-            n2=1;
             break;
         case T_ADD:
-            n2=0;
             break;
         case T_SUB:
-            n2=0;
             break;
         case T_INT:
-            n2=-1;
             break;
         default:
             return -1;
