@@ -124,30 +124,26 @@ struct Node* build_tree(struct Node** list, int size) {
 
 int parse_tree(struct Node* root) {
     int res = 0;
-    if(root->left == NULL && root->right == NULL) return root->rval;
-
+    if(root->left == NULL && root->right == NULL) return atoi(root->rval);
+    
+    int l = parse_tree(root->left);
+    int r = parse_tree(root->right);
     
     switch(root->token) {
-        case T_DIV:
-//           return root->left->rval/root->right->rval;
-            break;
+        case T_DIV: //TODO: implement div 0 error
+            return l/r;
         case T_MUL:
-            break;
+            return l*r;
         case T_ADD:
-            break;
+            return l+r;
         case T_SUB:
-            break;
+            return l+r;
         case T_INT:
             break;
         default:
-            return -1;
+            return 0; //TODO: implement error
     }
 
-}
-
-int insert_node(struct Node* next) {
-    if(next == NULL) return 1;
-    return 0;
 }
 
 int tokenize(char* input) {
@@ -247,6 +243,7 @@ int tokenize(char* input) {
 
     struct Node* root = build_tree(nodes, tc);
     int result = parse_tree(root);
+    printf("%d\n", result);
     return 0;
 }
 
